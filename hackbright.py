@@ -129,6 +129,14 @@ def handle_input():
             title = args[0]
             get_project_by_title(title)
 
+        elif command == "grade":
+            github, title = args
+            get_grade_by_github_title(github, title)
+
+        elif command == "assign_grade":
+            github, title, grade = args
+            assign_grade(github, title, grade)
+
         else:
             if command != "quit":
                 print("Invalid Entry. Try again.")
