@@ -125,6 +125,10 @@ def handle_input():
             first_name, last_name, github = args  # unpack!
             make_new_student(first_name, last_name, github)
 
+        elif command == "project":
+            title = args[0]
+            get_project_by_title(title)
+
         else:
             if command != "quit":
                 print("Invalid Entry. Try again.")
