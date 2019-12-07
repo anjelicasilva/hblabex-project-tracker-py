@@ -30,9 +30,7 @@ def get_student_by_github(github):
         """
 
     db_cursor = db.session.execute(QUERY, {'github': github})
-
     row = db_cursor.fetchone()
-
     print("Student: {} {}\nGitHub account: {}".format(row[0], row[1], row[2]))
 
 
@@ -51,9 +49,7 @@ def make_new_student(first_name, last_name, github):
                                'last_name': last_name,
                                'github': github
                                })
-
     db.session.commit()
-
     print(f"Student: {first_name} {last_name}\nGitHub account: {github} added.")
 
 
@@ -72,9 +68,7 @@ def make_new_project(title, max_grade, description):
                                'max_grade': max_grade,
                                'description': description,
                                })
-
     db.session.commit()
-
     print(f"Project: {title} was successfully added.")
 
 
@@ -87,9 +81,7 @@ def get_project_by_title(title):
         """
 
     db_cursor = db.session.execute(QUERY, {'title': title})
-
     row = db_cursor.fetchone()
-
     print(f"Title: {row[0]}\nDescription: {row[1]}\nMax Grade: {row[2]}")
 
 
@@ -103,10 +95,27 @@ def get_grade_by_github_title(github, title):
         """
 
     db_cursor = db.session.execute(QUERY, {'github': github, 'title': title})
-
     row = db_cursor.fetchone()
-
     print(f"{github} received {row[0]} for project {title}.")
+
+
+def get_all_grades_for_student(first_name, last_name):
+    """Print grade for each project given student name."""
+
+    QUERY = """
+        SELECT project_title, grade
+        FROM grades
+        LEFT JOIN students
+        ON grades.student_github = students.github
+        WHERE first_name = :first_name
+        AND last_name = :last_name
+        """
+
+    db_cursor = db.session.execute(QUERY, {'first_name': first_name,
+                                           'last_name': last_name})
+    rows = db_cursor.fetchall()
+    for i in range(len(rows)):
+        print(f"{rows[i][0]}: {rows[i][1]}")
 
 
 def assign_grade(github, title, grade):
@@ -117,9 +126,7 @@ def assign_grade(github, title, grade):
         """
 
     db.session.execute(QUERY, {'github': github, 'title': title, 'grade': grade})
-
     db.session.commit()
-
     print(f"Grade assigned for project {title} to {github}.")
 
 
@@ -162,6 +169,10 @@ def handle_input():
             title, max_grade = args[:2]
             description = (' ').join(args[2:])
             make_new_project(title, max_grade, description)
+
+        elif command == "get_grades":
+            first_name, last_name = args
+            get_all_grades_for_student(first_name, last_name)
 
         else:
             if command != "quit":
