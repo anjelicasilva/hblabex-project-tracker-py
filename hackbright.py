@@ -137,6 +137,10 @@ def handle_input():
     as a command.
     """
 
+    def handle_errors(args):
+        if args != req_args:
+            print("Invalid number of arguments, please try again!")
+
     command = None
 
     while command != "quit":
@@ -146,31 +150,45 @@ def handle_input():
         args = tokens[1:]
 
         if command == "student":
+            req_args = 1
+            handle_errors(args)
             github = args[0]
             get_student_by_github(github)
 
         elif command == "new_student":
+            req_args = 3
+            handle_errors(args)
             first_name, last_name, github = args  # unpack!
             make_new_student(first_name, last_name, github)
 
         elif command == "project":
+            req_args = 1
+            handle_errors(args)
             title = args[0]
             get_project_by_title(title)
 
         elif command == "grade":
+            req_args = 2
+            handle_errors(args)
             github, title = args
             get_grade_by_github_title(github, title)
 
         elif command == "assign_grade":
+            req_args = 3
+            handle_errors(args)
             github, title, grade = args
             assign_grade(github, title, grade)
 
         elif command == "add_project":
+            req_args >= 3
+            handle_errors(args)
             title, max_grade = args[:2]
             description = (' ').join(args[2:])
             make_new_project(title, max_grade, description)
 
         elif command == "get_grades":
+            req_args = 2
+            handle_errors(args)
             first_name, last_name = args
             get_all_grades_for_student(first_name, last_name)
 
@@ -182,7 +200,7 @@ def handle_input():
 if __name__ == "__main__":
     connect_to_db(app)
 
-    handle_input()
+    # handle_input()
 
     # To be tidy, we close our database connection -- though,
     # since this is where our program ends, we'd quit anyway.
